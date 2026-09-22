@@ -1,0 +1,331 @@
+
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mari Membaca & Menulis - Tahap 1</title>
+  <style>
+    :root {
+      --primary: #FF6B6B;
+      --secondary: #4ECDC4;
+      --yellow: #FFE66D;
+      --dark: #2C3E50;
+    }
+    
+    body {
+      font-family: 'Comic Sans MS', 'Chalkboard SE', sans-serif;
+      background-color: #F7F9FC;
+      margin: 0;
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      text-align: center;
+      border: 4px solid var(--yellow);
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    p.subtitle {
+      color: #7f8c8d;
+      margin-top: 0;
+      font-size: 14px;
+    }
+
+    /* Tab Menu */
+    .nav-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: #e0e0e0;
+      color: var(--dark);
+      transition: 0.3s;
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Card Membaca */
+    .card {
+      background: #FFF9E6;
+      border-radius: 15px;
+      padding: 20px;
+      border: 2px dashed var(--yellow);
+      margin-bottom: 15px;
+    }
+
+    .emoji-img {
+      font-size: 70px;
+      margin: 10px 0;
+    }
+
+    .word-display {
+      font-size: 36px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin: 10px 0;
+    }
+
+    .syllable-1 { color: #E74C3C; }
+    .syllable-2 { color: #2980B9; }
+
+    .audio-btn {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 0 #3b9b94;
+    }
+
+    .audio-btn:active {
+      transform: translateY(4px);
+      box-shadow: none;
+    }
+
+    /* Modul Menulis (Susun Suku Kata) */
+    .drop-zone {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+      min-height: 50px;
+    }
+
+    .slot {
+      width: 90px;
+      height: 50px;
+      border: 3px dashed #bdc3c7;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: bold;
+      background: #fafafa;
+    }
+
+    .options-zone {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .chip-btn {
+      background: var(--yellow);
+      color: var(--dark);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #d4ac0d;
+    }
+
+    .score-box {
+      font-size: 18px;
+      color: #27ae60;
+      font-weight: bold;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>📖 BM Tahap 1 ✏️</h1>
+  <p class="subtitle">Mari Membaca & Menulis Bersama!</p>
+
+  <!-- Navigasi Tab -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('membaca')">Membaca</button>
+    <button class="tab-btn" onclick="switchTab('menulis')">Menulis</button>
+  </div>
+
+  <!-- MODUL MEMBACA -->
+  <div id="membaca" class="tab-content active">
+    <div class="card">
+      <div id="read-emoji" class="emoji-img">🐱</div>
+      <div id="read-word" class="word-display">
+        <span class="syllable-1">ku</span><span class="syllable-2">cing</span>
+      </div>
+      <button class="audio-btn" onclick="playSpeech()">🔊 Sebut Perkataan</button>
+    </div>
+    <button onclick="nextReadItem()" style="background:none; border:none; color:#7f8c8d; cursor:pointer; text-decoration:underline;">Tukar Gambar ➔</button>
+  </div>
+
+  <!-- MODUL MENULIS (SUSUN SUKU KATA) -->
+  <div id="menulis" class="tab-content">
+    <div class="card">
+      <p style="font-size:14px; margin:0; color:#555;">Tekan suku kata mengikut urutan yang betul:</p>
+      <div id="write-emoji" class="emoji-img">🚗</div>
+      
+      <!-- Petak Jawapan -->
+      <div class="drop-zone">
+        <div id="slot-1" class="slot">?</div>
+        <div id="slot-2" class="slot">?</div>
+      </div>
+
+      <!-- Pilihan Suku Kata -->
+      <div id="options-container" class="options-zone">
+        <!-- Generasi automatik menerusi JS -->
+      </div>
+    </div>
+    <div id="feedback" class="score-box"></div>
+    <button onclick="resetWriteQuiz()" style="margin-top:10px; padding:6px 15px; border-radius:8px; border:1px solid #ccc; background:#fff; cursor:pointer;">Semula 🔄</button>
+  </div>
+</div>
+
+<script>
+  // Data Pembelajaran
+  const items = [
+    { word: "kucing", s1: "ku", s2: "cing", emoji: "🐱" },
+    { word: "kereta", s1: "ke", s2: "reta", emoji: "🚗" },
+    { word: "buku", s1: "bu", s2: "ku", emoji: "📚" },
+    { word: "roti", s1: "ro", s2: "ti", emoji: "🍞" }
+  ];
+
+  let readIndex = 0;
+  let writeIndex = 1;
+  let selectedParts = [];
+
+  // Tukar Tab
+  function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    event.target.classList.add('active');
+    
+    if(tabId === 'menulis') loadWriteQuiz();
+  }
+
+  // MODUL MEMBACA
+  function updateReadCard() {
+    const item = items[readIndex];
+    document.getElementById('read-emoji').innerText = item.emoji;
+    document.getElementById('read-word').innerHTML = 
+      `<span class="syllable-1">${item.s1}</span><span class="syllable-2">${item.s2}</span>`;
+  }
+
+  function nextReadItem() {
+    readIndex = (readIndex + 1) % items.length;
+    updateReadCard();
+  }
+
+  // Gunakan Text-to-Speech Asal Pelayar (Percuma & Tanpa Fail Audio)
+  function playSpeech() {
+    const item = items[readIndex];
+    const utterance = new SpeechSynthesisUtterance(item.word);
+    utterance.lang = 'id-ID'; // Bahasa Indonesia/Melayu mempunyai sebutan fonetik rapat
+    utterance.rate = 0.8; // Perlahankan sedikit untuk murid Tahap 1
+    window.speechSynthesis.speak(utterance);
+  }
+
+  // MODUL MENULIS
+  function loadWriteQuiz() {
+    const item = items[writeIndex];
+    document.getElementById('write-emoji').innerText = item.emoji;
+    document.getElementById('slot-1').innerText = "?";
+    document.getElementById('slot-2').innerText = "?";
+    document.getElementById('feedback').innerText = "";
+    selectedParts = [];
+
+    // Rawakkan susunan suku kata
+    const options = [item.s1, item.s2].sort(() => Math.random() - 0.5);
+    const container = document.getElementById('options-container');
+    container.innerHTML = "";
+
+    options.forEach(sukaKata => {
+      const btn = document.createElement('button');
+      btn.className = 'chip-btn';
+      btn.innerText = sukaKata;
+      btn.onclick = () => selectSyllable(sukaKata, btn);
+      container.appendChild(btn);
+    });
+  }
+
+  function selectSyllable(syllable, btn) {
+    if (selectedParts.length < 2) {
+      selectedParts.push(syllable);
+      document.getElementById(`slot-${selectedParts.length}`).innerText = syllable;
+      btn.style.visibility = 'hidden';
+
+      if (selectedParts.length === 2) {
+        checkAnswer();
+      }
+    }
+  }
+
+  function checkAnswer() {
+    const item = items[writeIndex];
+    const userAnswer = selectedParts.join('');
+    const feedback = document.getElementById('feedback');
+
+    if (userAnswer === item.word) {
+      feedback.innerText = "🎉 Tahniah! Ejaan Betul!";
+      feedback.style.color = "#27ae60";
+      // Bunyi ganjaran sebutan
+      const utterance = new SpeechSynthesisUtterance("Bagus! Ejaan betul.");
+      utterance.lang = 'id-ID';
+      window.speechSynthesis.speak(utterance);
+      
+      setTimeout(() => {
+        writeIndex = (writeIndex + 1) % items.length;
+        loadWriteQuiz();
+      }, 2000);
+    } else {
+      feedback.innerText = "❌ Cuba Lagi!";
+      feedback.style.color = "#e74c3c";
+    }
+  }
+
+  function resetWriteQuiz() {
+    loadWriteQuiz();
+  }
+
+  // Inisialisasi awal
+  updateReadCard();
+</script>
+
+</body>
+</html>
